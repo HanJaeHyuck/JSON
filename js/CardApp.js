@@ -22,12 +22,17 @@ class CardApp {
     //이렇게 바인딩하면 무조껀 this와 함께 실행됨
     serach = () => {
         let word = this.word.val();
-        let filterData = this.data.filter(item => item.name.includes(word));
-        this.loadData(filterData);
         let regex = new RegExp(word,"gi");
-        let content = document.querySelector(".name").innerHTML;
-        content = content.replace(regex, `<span class="highlight">$&</span>`);
-        document.querySelector(".name").innerHTML = content;
+        this.data.forEach(item => {
+            let filterData = this.data.filter(item => item.name.includes(word)).map(item => {
+                let newItem = JSON.parse(JSON.stringify(item));
+                newItem.name = newItem.name.replace(regex, `<span class="highlight">$&</span>`);
+                return newItem;
+            });
+            this.loadData(filterData);
+        });
+        
+               
     }
 
     loadData(data) {
@@ -46,7 +51,7 @@ class CardApp {
         return `
         <div class="card">
             <div class="img">
-                <img src="/img/${item.image}" alt="${item.name}">
+                <img src="/img/${item.image}" alt="${item.image}">
             </div>
             <div class="info">
                 <h4 class="name">${item.name}</h4>

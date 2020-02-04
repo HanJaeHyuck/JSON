@@ -4,6 +4,7 @@ class CardApp {
         this.word = $("#word");
         this.addEvent();
         this.data = [];
+        
         $.ajax({
             url: '/data.php',
             method: 'get',
@@ -21,17 +22,44 @@ class CardApp {
 
     //이렇게 바인딩하면 무조껀 this와 함께 실행됨
     serach = () => {
+        
+        // console.log(this.search);
         let word = this.word.val();
         let regex = new RegExp(word,"gi");
-        this.data.forEach(item => {
+        let search = $("#searchOpt option:selected").val();
+        if(search =="name") {
+            this.data.forEach(item => {
+
             let filterData = this.data.filter(item => item.name.includes(word)).map(item => {
-                let newItem = JSON.parse(JSON.stringify(item));
+            let newItem = JSON.parse(JSON.stringify(item));
                 newItem.name = newItem.name.replace(regex, `<span class="highlight">$&</span>`);
                 return newItem;
             });
             this.loadData(filterData);
-        });
-        
+
+            });
+
+        } else if(search =="price") {
+            this.data.forEach(item => {
+
+                let filterData = this.data.filter( item => word >= item.price );
+                console.log(filterData);
+                
+                // let newItem = JSON.parse(JSON.stringify(item));
+                // console.log(newItem);
+                // if(item.price >= word) {
+
+                    // x.replace(item.price, `<span class="highlight">$&</span>`)
+                filterData = filterData.map(item => {
+                    let newItem = JSON.parse(JSON.stringify(item));
+                    newItem.price = newItem.price.toString().replace(newItem.price, `<span class="highlight">$&</span>`);
+                    return newItem;     
+                });
+
+                this.loadData(filterData);
+                // return newItem;
+            });    
+        }
                
     }
 
